@@ -22,7 +22,7 @@ This project aims to automatically detect the severity of Diabetic Retinopathy (
 4. Go to `http://localhost:5000` in your browser
 
 ## 📂 Dataset
-We used publicly available datasets like APTOS and EyePACS (from Kaggle)<a herf = "https://www.kaggle.com/competitions/aptos2019-blindness-detection/data"> Link</a>
+We used publicly available datasets like APTOS and EyePACS (from Kaggle)<a href ="https://www.kaggle.com/competitions/aptos2019-blindness-detection/data">[Link]</a>
 
 ## 📜 License
 Open-source for educational use.
