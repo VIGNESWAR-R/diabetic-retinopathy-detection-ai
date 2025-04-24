@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetic Retinopathy Detection</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.ico')}}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        /* Animated Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            text-align: center;
+            background: linear-gradient(135deg, #2a0e61, #4e2a84);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar with Logo */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+        }
+        
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            text-decoration: none;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Upload Section */
+        .upload-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin-top: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .custom-file-upload {
+            border: 2px dashed white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-file-upload:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .uploaded-image {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            max-width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Motivational Quote Section */
+        .quote-section {
+            margin-top: 3rem;
+            font-size: 1.2rem;
+            font-style: italic;
+            opacity: 0.9;
+        }
+        .accuracy {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            color: #f8f9fa;
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span class="fw-bold">DR Detection</span>
+            </a>
+            <div class="ms-auto">
+                <a href="{{ url_for('about') }}" class="logout-btn"><i class="fas fa-info-circle me-1"></i> About</a>
+                <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="container mt-4">
+        <h1 class="display-5 fw-bold"><b style="color: #6a61ce;">DR</b> Detecter👁️</h1>
+        <p class="lead">Upload a retinal image to analyze the stage of diabetic retinopathy</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="upload-card">
+        <form method="POST" enctype="multipart/form-data" class="text-center">
+            <div class="custom-file-upload mb-4">
+                <input type="file" name="file" id="file" accept="image/*" class="d-none" required>
+                <label for="file" class="btn btn-link text-decoration-none">
+                    <i class="fas fa-cloud-upload-alt fa-4x mb-4"></i>
+                    <h5 class="mb-2" id="file-label" style="color: white;">Click to Upload Retinal Image</h5>
+                    <p class="text-light">Supported formats: JPG, PNG, JPEG</p>
+                </label>
+            </div>
+            <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+            <button type="submit" class="btn btn-light btn-lg w-100">
+                <i class="fas fa-search me-2"></i> Analyze Image
+            </button>
+        </form>
+
+        {% if prediction %}
+            <div class="mt-4 text-center">
+                <h3 class="prediction-result">
+                    Diagnosis: <span class="badge bg-light text-dark">{{ prediction }}</span>
+                </h3>
+                <h4 class="accuracy">Accuracy: <span class="badge bg-success">{{ accuracy }}%</span></h4>
+                <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image">
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Motivational Quote -->
+    <div class="container quote-section">
+        <p><b>“The eye is the window to the soul, and technology is helping us see it clearer than ever.”</b></p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- File Upload Preview -->
+    <script>
+        function validateCaptcha() {
+            var response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                alert("Please confirm you are not a robot.");
+                return false;
+            }
+            return true;
+        }
+        document.getElementById('file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0].name;
+            document.getElementById('file-label').innerHTML = `<i class="fas fa-file-image me-2"></i> ${fileName}`;
+        });
+    </script>
+</body>
+</html>

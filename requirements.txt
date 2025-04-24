@@ -1,0 +1,8 @@
+flask
+flask-login
+flask-wtf
+tensorflow
+opencv-python
+numpy
+pandas
+scikit-learn
